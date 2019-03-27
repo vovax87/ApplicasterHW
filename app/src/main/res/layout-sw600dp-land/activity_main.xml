@@ -15,12 +15,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <!--<fragment-->
-            <!--android:id="@+id/detailsFragment"-->
-            <!--android:name="com.applicaster.hw.fragments.MovieDetailsFragment"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1" />-->
+
+        <FrameLayout
+            android:id="@+id/fragmentsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+           />
     </LinearLayout>
 
 </layout>

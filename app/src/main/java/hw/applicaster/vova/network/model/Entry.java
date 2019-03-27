@@ -202,4 +202,9 @@ public class Entry implements Parcelable {
         return 0;
     }
 
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

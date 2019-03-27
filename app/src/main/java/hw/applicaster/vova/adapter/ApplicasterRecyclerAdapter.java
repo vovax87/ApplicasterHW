@@ -2,10 +2,16 @@ package hw.applicaster.vova.adapter;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,9 +94,10 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
     }
 
     public void setValues(List<Entry> response) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(response, items));
         items.clear();
         items.addAll(response);
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @Override
@@ -126,6 +133,8 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         void setViewModel(Entry model) {
             if (binding != null) {
                 binding.setModel(model);
+                String src = model.getMediaGroup().get(0).getMediaItem().get(0).getSrc();
+                Glide.with(binding.thumbnail.getContext()).load(src).apply(new RequestOptions().error(R.drawable.error_image).placeholder(R.drawable.loding_image).fitCenter()).into(binding.thumbnail);
             }
         }
     }
@@ -153,14 +162,19 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         }
 
         @Override
-        void setViewModel(Entry model) {
+        void setViewModel(@NonNull Entry model) {
+
+            Log.e("vova","setViewModel "+model.toString());
+
             if (binding != null) {
                 binding.setModel(model);
+                String src = model.getMediaGroup().get(0).getMediaItem().get(0).getSrc();
+                Glide.with(binding.thumbnail.getContext()).load(src).apply(new RequestOptions().error(R.drawable.error_image).placeholder(R.drawable.loding_image).fitCenter()).into(binding.thumbnail);
             }
         }
     }
 
-    static abstract class BaseViewHolder extends RecyclerView.ViewHolder {
+     abstract class BaseViewHolder extends RecyclerView.ViewHolder {
 
         public BaseViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -176,6 +190,49 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         void itemClicked(Entry item);
     }
 
+    class MyDiffCallback extends DiffUtil.Callback{
+
+        List<Entry> oldEntries;
+        List<Entry> newEntries;
+
+        public MyDiffCallback(List<Entry> newEntries, List<Entry> oldEntries) {
+            this.newEntries = newEntries;
+            this.oldEntries = oldEntries;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldEntries.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newEntries.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            boolean equals = oldEntries.get(oldItemPosition).getType().getValue().equals(newEntries.get(oldItemPosition).getType().getValue());
+            Log.e("Vova","areItemsTheSame"+equals);
+            return equals;
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            boolean equals = oldEntries.get(oldItemPosition).getId().equals(newEntries.get(oldItemPosition).getId());
+            Log.e("Vova","areContentsTheSame"+equals);
+            return equals;
+        }
+
+        @Nullable
+        @Override
+        public Object getChangePayload(int oldItemPosition, int newItemPosition) {
+            //you can return particular field for changed item.
+            return super.getChangePayload(oldItemPosition, newItemPosition);
+        }
+
+
+    }
 
 
 }

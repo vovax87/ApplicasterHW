@@ -57,7 +57,9 @@ public class ApplicastterDetailsFragment extends Fragment {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.details_fragment, container, false);
         mViewModel = ViewModelProviders.of(this).get(ApplicastDetailsViewModel.class);
-        assert getArguments() != null;
+
+        if (getArguments() == null || getArguments().isEmpty()) return binding.getRoot();
+
         Entry entry = getArguments().getParcelable(ENTRY);
         if (entry != null) {
             binding.setEntry(entry);
@@ -66,30 +68,34 @@ public class ApplicastterDetailsFragment extends Fragment {
         if (entry.getType().getValue().equals(Type.VIDEO)) {
             preperPlayer(entry);
         } else if (entry.getType().getValue().equals(Type.LINK)) {
-            WebView webView = new WebView(getContext());
-            binding.base.addView(webView);
-
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setLoadsImagesAutomatically(true);
-            webView.getSettings().setAllowFileAccessFromFileURLs(true);
-            webView.getSettings().setAllowFileAccess(true);
-            webView.getSettings().setMixedContentMode(0);
-            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
-            webView.getSettings().setAppCacheEnabled(false);
-            webView.getSettings().setSupportZoom(true);
-            webView.getSettings().setBuiltInZoomControls(true);
-            webView.getSettings().setDisplayZoomControls(false);
-            webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-            webView.getSettings().setLoadWithOverviewMode(true);
-            webView.getSettings().setUseWideViewPort(true);
-            webView.getSettings().setDomStorageEnabled(true);
-            webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-
-            webView.loadUrl(entry.getLink().getHref());
+            setWebView(entry);
         }
 
         return binding.getRoot();
+    }
+
+    private void setWebView(Entry entry) {
+        WebView webView = new WebView(getContext());
+        binding.base.addView(webView);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setAllowFileAccessFromFileURLs(true);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setMixedContentMode(0);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        webView.getSettings().setAppCacheEnabled(false);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+
+        webView.loadUrl(entry.getLink().getHref());
     }
 
 

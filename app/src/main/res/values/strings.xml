@@ -10,4 +10,6 @@
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title">Title</string>
     <string name="summery">Summery</string>
+    <string name="posterimage">posterImage</string>
+    <string name="tag_details_fragment">detailsFragment</string>
 </resources>

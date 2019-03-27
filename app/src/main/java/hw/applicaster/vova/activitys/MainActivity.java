@@ -2,13 +2,17 @@ package hw.applicaster.vova.activitys;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import hw.applicaster.vova.R;
 import hw.applicaster.vova.databinding.ActivityMainBinding;
 import hw.applicaster.vova.fragments.ApplicasterListFragment;
+import hw.applicaster.vova.fragments.ApplicastterDetailsFragment;
+import hw.applicaster.vova.fragments.NavigationListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationListener {
 
     ActivityMainBinding binding;
 
@@ -17,9 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        // Check that the activity is using the layout version with
-        // the fragment_container FrameLayout
-        if (binding.fragmentsContainer != null){
+        if (!getResources().getBoolean(R.bool.isTablet)){
             //if we're being restored from a previous state,
            //  then we don't need to do anything and should return
             if (savedInstanceState != null) {
@@ -43,5 +45,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void navigateTo(Fragment fragment) {
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+        transaction.replace(binding.fragmentsContainer.getId(), fragment);
+        transaction.addToBackStack(null);
+        // Commit the transaction
+        transaction.commit();
+
     }
 }

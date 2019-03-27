@@ -29,7 +29,6 @@ public enum Repository {
         return linkResponseLiveData;
     }
 
-    //todo clean empty
     public void getVideos() {
         Log.e("Vova","getVideos");
 
@@ -43,7 +42,8 @@ public enum Repository {
                 Log.e("Vova","getVideos onResponse");
 
                 List<Entry> videoEntries = response.body().getVideoEntries();
-                videoEntries.removeIf(entry -> TextUtils.isEmpty(entry.getTitle()));
+                // remove empty
+                videoEntries.removeIf(entry -> entry == null ||TextUtils.isEmpty(entry.getTitle()));
                 videoResponseLiveData.postValue(videoEntries);
 
             }
@@ -67,7 +67,7 @@ public enum Repository {
                 }
 
                 List<Entry> linkEntry = response.body().getLinkEntry();
-                linkEntry.removeIf(entry -> TextUtils.isEmpty(entry.getTitle()));
+                linkEntry.removeIf(entry ->  entry == null ||TextUtils.isEmpty(entry.getTitle()));
                 linkResponseLiveData.postValue(linkEntry);
 
 
