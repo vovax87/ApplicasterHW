@@ -36,12 +36,13 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public ApplicasterRecyclerAdapter.BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ApplicasterRecyclerAdapter.BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
-        switch (viewType){
+        switch (viewType) {
             case VIDEO_TYPE:
                 VideoItemBinding binding = DataBindingUtil
                         .inflate(layoutInflater, R.layout.video_item, parent, false);
@@ -67,7 +68,6 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
     }
 
 
-
     @Override
     public int getItemViewType(int position) {
         if (items.get(position).getType().getValue().equals(Type.VIDEO))
@@ -84,7 +84,6 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         super.onViewAttachedToWindow(holder);
         holder.bind();
     }
-
 
 
     @Override
@@ -111,7 +110,7 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
 
         VideoItemBinding binding;
 
-        public VideoViewHolder(@NonNull VideoItemBinding binding) {
+        private VideoViewHolder(@NonNull VideoItemBinding binding) {
             super(binding.getRoot());
         }
 
@@ -143,7 +142,7 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
 
         LinkItemBinding binding;
 
-        public LinkViewHolder(@NonNull LinkItemBinding itemView) {
+        private LinkViewHolder(@NonNull LinkItemBinding itemView) {
             super(itemView.getRoot());
         }
 
@@ -151,7 +150,7 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         void bind() {
             if (binding == null) {
                 binding = DataBindingUtil.bind(itemView);
-           }
+            }
         }
 
         @Override
@@ -163,9 +162,6 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
 
         @Override
         void setViewModel(@NonNull Entry model) {
-
-            Log.e("vova","setViewModel "+model.toString());
-
             if (binding != null) {
                 binding.setModel(model);
                 String src = model.getMediaGroup().get(0).getMediaItem().get(0).getSrc();
@@ -174,14 +170,17 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         }
     }
 
-     abstract class BaseViewHolder extends RecyclerView.ViewHolder {
+    abstract class BaseViewHolder extends RecyclerView.ViewHolder {
 
-        public BaseViewHolder(@NonNull View itemView) {
+        private BaseViewHolder(@NonNull View itemView) {
             super(itemView);
+            bind();
         }
 
         abstract void bind();
+
         abstract void unbind();
+
         abstract void setViewModel(Entry model);
     }
 
@@ -190,12 +189,12 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
         void itemClicked(Entry item);
     }
 
-    class MyDiffCallback extends DiffUtil.Callback{
+    class MyDiffCallback extends DiffUtil.Callback {
 
         List<Entry> oldEntries;
         List<Entry> newEntries;
 
-        public MyDiffCallback(List<Entry> newEntries, List<Entry> oldEntries) {
+        private MyDiffCallback(List<Entry> newEntries, List<Entry> oldEntries) {
             this.newEntries = newEntries;
             this.oldEntries = oldEntries;
         }
@@ -212,16 +211,12 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
 
         @Override
         public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            boolean equals = oldEntries.get(oldItemPosition).getType().getValue().equals(newEntries.get(oldItemPosition).getType().getValue());
-            Log.e("Vova","areItemsTheSame"+equals);
-            return equals;
+            return oldEntries.get(oldItemPosition).getType().getValue().equals(newEntries.get(oldItemPosition).getType().getValue());
         }
 
         @Override
         public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            boolean equals = oldEntries.get(oldItemPosition).getId().equals(newEntries.get(oldItemPosition).getId());
-            Log.e("Vova","areContentsTheSame"+equals);
-            return equals;
+            return oldEntries.get(oldItemPosition).getId().equals(newEntries.get(oldItemPosition).getId());
         }
 
         @Nullable

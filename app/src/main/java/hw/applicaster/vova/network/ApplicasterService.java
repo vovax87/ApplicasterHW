@@ -8,8 +8,6 @@ import retrofit2.http.GET;
 
 public interface ApplicasterService {
 
-
-
     @GET(Constants.VIDEO_ITEM)
     Call<VideoResponse> getVideos();
 

@@ -31,6 +31,7 @@ public enum RetrofitManager {
     public void getVideos(Callback<VideoResponse> callback) {
         getApplicasterService().getVideos().enqueue(callback);
     }
+
     public void getLinks(Callback<LinkResponse> callback) {
         getApplicasterService().getLinks().enqueue(callback);
     }

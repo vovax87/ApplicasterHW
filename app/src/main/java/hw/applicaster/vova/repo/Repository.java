@@ -30,21 +30,19 @@ public enum Repository {
     }
 
     public void getVideos() {
-        Log.e("Vova","getVideos");
-
-        RetrofitManager.INSTANCE.getVideos( new Callback<VideoResponse>() {
+        RetrofitManager.INSTANCE.getVideos(new Callback<VideoResponse>() {
             @Override
             public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
                 if (!response.isSuccessful()) {
                     onFailure(call, null);
                     return;
                 }
-                Log.e("Vova","getVideos onResponse");
-
-                List<Entry> videoEntries = response.body().getVideoEntries();
-                // remove empty
-                videoEntries.removeIf(entry -> entry == null ||TextUtils.isEmpty(entry.getTitle()));
-                videoResponseLiveData.postValue(videoEntries);
+                if (response.body() != null) {
+                    List<Entry> videoEntries = response.body().getVideoEntries();
+                    // remove empty
+                    videoEntries.removeIf(entry -> entry == null || TextUtils.isEmpty(entry.getTitle()));
+                    videoResponseLiveData.postValue(videoEntries);
+                }
 
             }
 
@@ -58,7 +56,7 @@ public enum Repository {
 
     public void getLinks() {
 
-        RetrofitManager.INSTANCE.getLinks( new Callback<LinkResponse>() {
+        RetrofitManager.INSTANCE.getLinks(new Callback<LinkResponse>() {
             @Override
             public void onResponse(Call<LinkResponse> call, Response<LinkResponse> response) {
                 if (!response.isSuccessful()) {
@@ -66,10 +64,11 @@ public enum Repository {
                     return;
                 }
 
-                List<Entry> linkEntry = response.body().getLinkEntry();
-                linkEntry.removeIf(entry ->  entry == null ||TextUtils.isEmpty(entry.getTitle()));
-                linkResponseLiveData.postValue(linkEntry);
-
+                if (response.body() != null) {
+                    List<Entry> linkEntry = response.body().getLinkEntry();
+                    linkEntry.removeIf(entry -> entry == null || TextUtils.isEmpty(entry.getTitle()));
+                    linkResponseLiveData.postValue(linkEntry);
+                }
 
             }
 

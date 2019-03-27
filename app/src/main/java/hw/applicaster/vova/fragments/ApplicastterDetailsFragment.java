@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -65,13 +67,28 @@ public class ApplicastterDetailsFragment extends Fragment {
             binding.setEntry(entry);
         }
 
-        if (entry.getType().getValue().equals(Type.VIDEO)) {
-            preperPlayer(entry);
-        } else if (entry.getType().getValue().equals(Type.LINK)) {
-            setWebView(entry);
+        if (entry != null) {
+            if (entry.getType().getValue().equals(Type.VIDEO)) {
+                preperPlayer(entry);
+            } else if (entry.getType().getValue().equals(Type.LINK)) {
+                setWebView(entry);
+                disableScrolling();
+            }
         }
 
         return binding.getRoot();
+    }
+
+    private void disableScrolling() {
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) binding.place.getLayoutParams();
+        params.setBehavior(new AppBarLayout.Behavior());
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            @Override
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                return false;
+            }
+        });
     }
 
     private void setWebView(Entry entry) {
@@ -80,8 +97,7 @@ public class ApplicastterDetailsFragment extends Fragment {
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(true);
-        webView.getSettings().setAllowFileAccessFromFileURLs(true);
-        webView.getSettings().setAllowFileAccess(true);
+        ;
         webView.getSettings().setMixedContentMode(0);
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
@@ -93,7 +109,6 @@ public class ApplicastterDetailsFragment extends Fragment {
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
 
         webView.loadUrl(entry.getLink().getHref());
     }

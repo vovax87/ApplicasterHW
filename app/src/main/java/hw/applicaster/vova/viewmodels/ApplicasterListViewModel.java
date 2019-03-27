@@ -30,14 +30,11 @@ public class ApplicasterListViewModel extends ViewModel {
         videoObserver = entries -> {
             entryList.addAll(entries);
             entriesMutableLiveData.postValue(entryList);
-            Log.e("Vova","videoObserver");
-
         };
+
         linkObserver = entries -> {
             entryList.addAll(entries);
             entriesMutableLiveData.postValue(entryList);
-            Log.e("Vova","linkObserver");
-
         };
         getFeed();
     }
@@ -49,7 +46,7 @@ public class ApplicasterListViewModel extends ViewModel {
         super.onCleared();
     }
 
-    public void getFeed() {
+    private void getFeed() {
         Repository.INSTANCE.getVideoResponseLiveData().observeForever(videoObserver);
         Repository.INSTANCE.getLinkResponseLiveData().observeForever(linkObserver);
         getVideos();
@@ -58,11 +55,11 @@ public class ApplicasterListViewModel extends ViewModel {
 
     }
 
-    public void getVideos() {
+    private void getVideos() {
         Repository.INSTANCE.getVideos();
     }
 
-    public void getLinks() {
+    private void getLinks() {
         Repository.INSTANCE.getLinks();
     }
 
