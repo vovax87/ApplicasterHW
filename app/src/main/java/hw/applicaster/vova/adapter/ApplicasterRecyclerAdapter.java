@@ -5,10 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -22,16 +23,18 @@ import hw.applicaster.vova.databinding.VideoItemBinding;
 import hw.applicaster.vova.network.model.Entry;
 import hw.applicaster.vova.network.model.general.Type;
 
-public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<ApplicasterRecyclerAdapter.BaseViewHolder> {
+public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<ApplicasterRecyclerAdapter.BaseViewHolder> implements Filterable {
 
     private static final int VIDEO_TYPE = 0;
     private static final int LINK_TYPE = 1;
 
     private static final String TAG = "ApplicasterRecyclerAdapter";
+    private  List<Entry> itemsFilterd;
     private final List<Entry> items;
     private final OnItemClickListener listener;
 
     public ApplicasterRecyclerAdapter(OnItemClickListener listener) {
+        itemsFilterd = new ArrayList<>();
         items = new ArrayList<>();
         this.listener = listener;
     }
@@ -64,16 +67,16 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        holder.setViewModel(items.get(position));
+        holder.setViewModel(itemsFilterd.get(position));
     }
 
 
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position).getType().getValue().equals(Type.VIDEO))
+        if (itemsFilterd.get(position).getType().getValue().equals(Type.VIDEO))
             return VIDEO_TYPE;
 
-        if (items.get(position).getType().getValue().equals(Type.LINK))
+        if (itemsFilterd.get(position).getType().getValue().equals(Type.LINK))
             return LINK_TYPE;
 
         throw new IllegalArgumentException("Invalid type " + position);
@@ -93,7 +96,9 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
     }
 
     public void setValues(List<Entry> response) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(response, items));
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(response, itemsFilterd));
+        itemsFilterd.clear();
+        itemsFilterd.addAll(response);
         items.clear();
         items.addAll(response);
         diffResult.dispatchUpdatesTo(this);
@@ -102,7 +107,44 @@ public class ApplicasterRecyclerAdapter extends RecyclerView.Adapter<Applicaster
     @Override
     public int getItemCount() {
 
-        return items.size();
+        return itemsFilterd.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                List<Entry> filteredList = new ArrayList<>();
+
+                if (charString.isEmpty()) {
+                    filteredList = items;
+                } else {
+                    for (Entry entry : items) {
+
+                        // name match condition -here we are looking for name or phone number match
+                        if (entry.getTitle().toLowerCase().contains(charString.toLowerCase()) ) {
+                            filteredList.add(entry);
+                        }
+                    }
+
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                itemsFilterd = (ArrayList<Entry>) filterResults.values;
+                notifyDataSetChanged();
+
+
+
+            }
+        };
     }
 
 

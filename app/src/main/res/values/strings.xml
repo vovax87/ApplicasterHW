@@ -12,4 +12,5 @@
     <string name="summery">Summery</string>
     <string name="posterimage">posterImage</string>
     <string name="tag_details_fragment">detailsFragment</string>
+    <string name="search">Search</string>
 </resources>
