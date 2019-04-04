@@ -13,7 +13,7 @@ There are three parts of the Model-View-ViewModel architecture:
 
 ![alt text](https://cdn.journaldev.com/wp-content/uploads/2018/04/android-mvvm-pattern.png)
 
-(MVVM - explanation was copied from - https://medium.com/@saquib3705/consuming-rest-api-using-retrofit-library-with-the-help-of-mvvm-dagger-livedata-and-rxjava2-in-67aebefe031d)
+
 
 3rd party librareis - glide,exoplayer,retrofit,gson 
 
